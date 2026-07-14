@@ -1,19 +1,268 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>藏壽司 Service Agent Demo</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #ffffff;
-      font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>原價屋 coolpc｜電腦零組件．DIY 組裝．原廠保固</title>
+<style>
+  :root{
+    --ink:#10243e;        /* deep navy ink */
+    --blue:#1457b8;       /* coolpc tech blue */
+    --blue-d:#0e3d82;
+    --sky:#e8f0fb;
+    --amber:#ff8a00;      /* price / CTA accent */
+    --line:#dfe4ea;
+    --paper:#f4f6f9;
+    --white:#ffffff;
+    --muted:#5b6b7e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.6;
+  }
+  a{color:inherit;text-decoration:none}
+
+  /* ---------- top utility bar ---------- */
+  .util{background:var(--ink);color:#cdd8e6;font-size:13px}
+  .util .wrap{max-width:1180px;margin:0 auto;padding:7px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+  .util a{margin-left:16px;opacity:.85}
+  .util a:hover{opacity:1;color:#fff}
+
+  /* ---------- header ---------- */
+  header{background:var(--blue);color:#fff}
+  .head{max-width:1180px;margin:0 auto;padding:16px 20px;display:flex;align-items:center;gap:24px}
+  .logo{display:flex;align-items:baseline;gap:8px;font-weight:900;letter-spacing:.5px}
+  .logo .mark{font-size:26px}
+  .logo .sub{font-size:12px;font-weight:400;opacity:.85}
+  .search{flex:1;display:flex;max-width:560px}
+  .search input{flex:1;border:0;padding:11px 14px;border-radius:6px 0 0 6px;font-size:15px;outline:none}
+  .search button{border:0;background:var(--amber);color:#fff;padding:0 22px;border-radius:0 6px 6px 0;font-weight:700;cursor:pointer;font-size:15px}
+  .head .acts{display:flex;gap:18px;font-size:14px}
+  .head .acts span{cursor:pointer;opacity:.92}
+  .head .acts span:hover{opacity:1}
+
+  /* ---------- nav ---------- */
+  nav{background:var(--blue-d)}
+  .navwrap{max-width:1180px;margin:0 auto;padding:0 20px;display:flex;gap:2px;flex-wrap:wrap}
+  nav a{color:#dbe6f6;padding:12px 16px;font-size:14.5px;font-weight:500}
+  nav a:hover{background:rgba(255,255,255,.12);color:#fff}
+
+  /* ---------- hero ---------- */
+  .hero{max-width:1180px;margin:20px auto 0;padding:0 20px;display:grid;grid-template-columns:1fr 300px;gap:16px}
+  .promo{background:linear-gradient(120deg,#123a72,#1f6fd6);border-radius:12px;color:#fff;padding:38px 40px;position:relative;overflow:hidden}
+  .promo .tag{display:inline-block;background:var(--amber);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.5px}
+  .promo h1{font-size:30px;line-height:1.3;margin:14px 0 8px;font-weight:900}
+  .promo p{opacity:.9;font-size:15px;max-width:440px}
+  .promo .cta{margin-top:20px;display:inline-block;background:#fff;color:var(--blue-d);font-weight:800;padding:11px 24px;border-radius:8px;font-size:15px;cursor:pointer}
+  .side{display:flex;flex-direction:column;gap:16px}
+  .sidecard{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .sidecard h3{font-size:15px;color:var(--blue);margin-bottom:10px}
+  .sidecard ul{list-style:none;font-size:13.5px;color:var(--muted)}
+  .sidecard li{padding:6px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between}
+  .sidecard li:last-child{border-bottom:0}
+  .sidecard li b{color:var(--amber)}
+
+  /* ---------- section ---------- */
+  .sec{max-width:1180px;margin:32px auto 0;padding:0 20px}
+  .sechead{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--blue);padding-bottom:8px;margin-bottom:18px}
+  .sechead h2{font-size:20px;color:var(--ink);font-weight:800}
+  .sechead h2 span{color:var(--blue)}
+  .sechead a{font-size:13px;color:var(--muted)}
+
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:.15s;display:flex;flex-direction:column}
+  .card:hover{box-shadow:0 8px 22px rgba(16,36,62,.1);transform:translateY(-2px)}
+  .thumb{aspect-ratio:1/1;background:var(--sky);display:flex;align-items:center;justify-content:center;color:#9cb4d4;font-size:13px;position:relative}
+  .thumb .badge{position:absolute;top:10px;left:10px;background:var(--amber);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px}
+  .card .body{padding:14px 14px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .card .brand{font-size:12px;color:var(--blue);font-weight:700}
+  .card .name{font-size:14px;color:var(--ink);font-weight:500;min-height:42px}
+  .card .price{margin-top:auto;display:flex;align-items:baseline;gap:8px}
+  .card .price .now{color:var(--amber);font-size:20px;font-weight:900}
+  .card .price .was{color:#9aa7b5;font-size:13px;text-decoration:line-through}
+  .card .buy{margin-top:6px;border:1px solid var(--blue);color:var(--blue);background:#fff;border-radius:8px;padding:8px 0;font-size:13.5px;font-weight:700;cursor:pointer}
+  .card .buy:hover{background:var(--blue);color:#fff}
+
+  /* ---------- trust strip ---------- */
+  .trust{max-width:1180px;margin:36px auto 0;padding:0 20px}
+  .trust .row{background:var(--white);border:1px solid var(--line);border-radius:12px;display:grid;grid-template-columns:repeat(4,1fr);text-align:center}
+  .trust .cell{padding:22px 12px;border-right:1px solid var(--line)}
+  .trust .cell:last-child{border-right:0}
+  .trust .cell .t{font-weight:800;color:var(--ink);font-size:15px}
+  .trust .cell .d{font-size:12.5px;color:var(--muted);margin-top:4px}
+
+  /* ---------- footer ---------- */
+  footer{margin-top:44px;background:var(--ink);color:#aebccd}
+  .foot{max-width:1180px;margin:0 auto;padding:34px 20px 18px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px}
+  .foot h4{color:#fff;font-size:14px;margin-bottom:12px}
+  .foot ul{list-style:none;font-size:13px}
+  .foot li{padding:4px 0}
+  .foot .about p{font-size:13px;line-height:1.8}
+  .copy{border-top:1px solid rgba(255,255,255,.1);text-align:center;font-size:12px;color:#7e8fa3;padding:14px 20px}
+  .demo-note{background:#fff8ec;border:1px dashed var(--amber);color:#8a5400;font-size:12.5px;text-align:center;padding:8px;border-radius:8px;max-width:1180px;margin:14px auto 0}
+
+  @media(max-width:900px){
+    .hero{grid-template-columns:1fr}.side{flex-direction:row}.sidecard{flex:1}
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .trust .row{grid-template-columns:repeat(2,1fr)}
+    .trust .cell:nth-child(2){border-right:0}.trust .cell:nth-child(1),.trust .cell:nth-child(2){border-bottom:1px solid var(--line)}
+    .foot{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:560px){.search{display:none}.grid{grid-template-columns:repeat(2,1fr)}}
+</style>
 </head>
 <body>
+
+  <div class="util">
+    <div class="wrap">
+      <span>明碼實價．原廠保固．全台門市</span>
+      <div>
+        <a href="#">會員登入</a>
+        <a href="#">加入會員</a>
+        <a href="#">訂單查詢</a>
+        <a href="#">門市資訊</a>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="head">
+      <a href="#" class="logo">
+        <span class="mark">原價屋</span>
+        <span class="sub">coolpc</span>
+      </a>
+      <div class="search">
+        <input type="text" placeholder="搜尋顯示卡、CPU、主機板、機殼…">
+        <button>搜尋</button>
+      </div>
+      <div class="acts">
+        <span>🛒 購物車</span>
+        <span>♡ 收藏</span>
+      </div>
+    </div>
+    <nav>
+      <div class="navwrap">
+        <a href="#">處理器 CPU</a>
+        <a href="#">主機板</a>
+        <a href="#">顯示卡</a>
+        <a href="#">記憶體</a>
+        <a href="#">固態硬碟</a>
+        <a href="#">電源供應器</a>
+        <a href="#">機殼</a>
+        <a href="#">散熱</a>
+        <a href="#">組裝服務</a>
+        <a href="#">特價商品</a>
+      </div>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="promo">
+      <span class="tag">本週精選</span>
+      <h1>新世代顯示卡到貨<br>自組主機，一次到位</h1>
+      <p>精選零組件、現貨供應、原廠保固。線上下單可選門市取貨，現貨約 1～2 個工作天備妥。</p>
+      <span class="cta">看本週特價 →</span>
+    </div>
+    <div class="side">
+      <div class="sidecard">
+        <h3>熱門排行</h3>
+        <ul>
+          <li><span>顯示卡 RTX 系列</span><b>NT$—</b></li>
+          <li><span>CPU 處理器</span><b>NT$—</b></li>
+          <li><span>DDR5 記憶體</span><b>NT$—</b></li>
+          <li><span>NVMe 固態硬碟</span><b>NT$—</b></li>
+        </ul>
+      </div>
+      <div class="sidecard">
+        <h3>購物須知</h3>
+        <ul>
+          <li><span>付款方式</span><span>信用卡／ATM</span></li>
+          <li><span>宅配時效</span><span>2～4 工作天</span></li>
+          <li><span>7 天猶豫期</span><span>網購適用</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sechead">
+      <h2><span>★</span> 本週特價商品</h2>
+      <a href="#">查看全部</a>
+    </div>
+    <div class="grid" id="deals"></div>
+  </section>
+
+  <section class="sec">
+    <div class="sechead">
+      <h2><span>＃</span> 熱門組裝零件</h2>
+      <a href="#">查看全部</a>
+    </div>
+    <div class="grid" id="hot"></div>
+  </section>
+
+  <section class="trust">
+    <div class="row">
+      <div class="cell"><div class="t">明碼實價</div><div class="d">官網售價即成交價</div></div>
+      <div class="cell"><div class="t">原廠保固</div><div class="d">直送品牌服務中心</div></div>
+      <div class="cell"><div class="t">門市取貨</div><div class="d">現貨 1～2 工作天</div></div>
+      <div class="cell"><div class="t">線上客服</div><div class="d">常見問題即時解答</div></div>
+    </div>
+  </section>
+
+  <div class="demo-note">這是供 webchat 展示用的示範頁面，所有商品與價格皆為佔位內容，非實際販售資訊。</div>
+
+  <footer>
+    <div class="foot">
+      <div class="about">
+        <h4>關於原價屋 coolpc</h4>
+        <p>提供電腦零組件、DIY 組裝與原廠保固服務，全台設有多間門市。本頁為示範用途。</p>
+      </div>
+      <div>
+        <h4>購物說明</h4>
+        <ul><li>付款方式</li><li>配送與運費</li><li>退換貨須知</li><li>保固說明</li></ul>
+      </div>
+      <div>
+        <h4>會員服務</h4>
+        <ul><li>加入會員</li><li>訂單查詢</li><li>點數折抵</li><li>會員優惠</li></ul>
+      </div>
+      <div>
+        <h4>聯絡我們</h4>
+        <ul><li>門市資訊</li><li>線上客服</li><li>企業採購</li><li>意見反映</li></ul>
+      </div>
+    </div>
+    <div class="copy">© 原價屋 coolpc（示範頁面．非官方網站）</div>
+  </footer>
+
+<script>
+  var deals = [
+    ["顯示卡","RTX 系列 12GB 顯示卡 三風扇","12,900","14,900","限量"],
+    ["處理器","8 核心 16 執行緒 盒裝 CPU","8,490","9,200","特價"],
+    ["記憶體","DDR5 32GB (16x2) 6000MHz","3,180","3,680","熱賣"],
+    ["固態硬碟","1TB NVMe Gen4 SSD 讀取 7000MB","2,290","2,790","下殺"]
+  ];
+  var hot = [
+    ["主機板","B 系列 ATX 主機板 DDR5","4,590","",""],
+    ["電源供應器","750W 80+ 金牌 全模組","2,690","","保固5年"],
+    ["機殼","直立式 ATX 玻璃側透 機殼","1,890","",""],
+    ["散熱器","塔式雙風扇 CPU 散熱器","1,290","",""]
+  ];
+  function render(id, arr){
+    var html = arr.map(function(p){
+      var was = p[3] ? '<span class="was">NT$'+p[3]+'</span>' : '';
+      var badge = p[4] ? '<span class="badge">'+p[4]+'</span>' : '';
+      return '<div class="card"><div class="thumb">'+badge+'商品圖（示意）</div>'
+        +'<div class="body"><div class="brand">'+p[0]+'</div>'
+        +'<div class="name">'+p[1]+'</div>'
+        +'<div class="price"><span class="now">NT$'+p[2]+'</span>'+was+'</div>'
+        +'<button class="buy">加入購物車</button></div></div>';
+    }).join('');
+    document.getElementById(id).innerHTML = html;
+  }
+  render('deals', deals);
+  render('hot', hot);
+</script>
 
 <script>
   window.BBAsyncInit = function() {
